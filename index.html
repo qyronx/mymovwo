@@ -317,45 +317,6 @@ const sha = async v => new Uint8Array(await crypto.subtle.digest("SHA-256", v));
 async function tagged(label, data){ const tag = await sha(ENC.encode(label)); return sha(concat(tag, tag, data)); }
 const xor = (a, b) => { const c = new Uint8Array(a.length); for (let i = 0; i < a.length; i++) c[i] = a[i] ^ b[i]; return c; };
 
-/* ---------- streaming SHA-256 (needed: Blossom upload auth must name the blob hash, and subtle.digest cannot stream) ---------- */
-const SHA_K = (() => { const k = [], pr = []; for (let n = 2; pr.length < 64; n++){ if (pr.every(p => n % p)) pr.push(n); } for (const p of pr) k.push(Math.floor((Math.cbrt(p) % 1) * 4294967296) >>> 0); return new Uint32Array(k); })();
-class Sha256 {
-  constructor(){ this.h = new Uint32Array([2,3,5,7,11,13,17,19].map(p => Math.floor((Math.sqrt(p) % 1) * 4294967296) >>> 0)); this.buf = new Uint8Array(64); this.n = 0; this.len = 0; this.w = new Uint32Array(64); }
-  block(b, o){
-    const w = this.w, h = this.h;
-    for (let i = 0; i < 16; i++, o += 4) w[i] = (b[o] << 24) | (b[o+1] << 16) | (b[o+2] << 8) | b[o+3];
-    for (let i = 16; i < 64; i++){
-      const a = w[i-15], c = w[i-2];
-      const s0 = ((a >>> 7) | (a << 25)) ^ ((a >>> 18) | (a << 14)) ^ (a >>> 3);
-      const s1 = ((c >>> 17) | (c << 15)) ^ ((c >>> 19) | (c << 13)) ^ (c >>> 10);
-      w[i] = (w[i-16] + s0 + w[i-7] + s1) | 0;
-    }
-    let a = h[0], b2 = h[1], c = h[2], d = h[3], e = h[4], f = h[5], g = h[6], hh = h[7];
-    for (let i = 0; i < 64; i++){
-      const S1 = ((e >>> 6) | (e << 26)) ^ ((e >>> 11) | (e << 21)) ^ ((e >>> 25) | (e << 7));
-      const t1 = (hh + S1 + ((e & f) ^ (~e & g)) + SHA_K[i] + w[i]) | 0;
-      const S0 = ((a >>> 2) | (a << 30)) ^ ((a >>> 13) | (a << 19)) ^ ((a >>> 22) | (a << 10));
-      const t2 = (S0 + ((a & b2) ^ (a & c) ^ (b2 & c))) | 0;
-      hh = g; g = f; f = e; e = (d + t1) | 0; d = c; c = b2; b2 = a; a = (t1 + t2) | 0;
-    }
-    h[0] = (h[0] + a) | 0; h[1] = (h[1] + b2) | 0; h[2] = (h[2] + c) | 0; h[3] = (h[3] + d) | 0;
-    h[4] = (h[4] + e) | 0; h[5] = (h[5] + f) | 0; h[6] = (h[6] + g) | 0; h[7] = (h[7] + hh) | 0;
-  }
-  update(d){
-    this.len += d.length; let i = 0;
-    if (this.n){ const t = Math.min(64 - this.n, d.length); this.buf.set(d.subarray(0, t), this.n); this.n += t; i = t; if (this.n === 64){ this.block(this.buf, 0); this.n = 0; } }
-    for (; i + 64 <= d.length; i += 64) this.block(d, i);
-    if (i < d.length){ this.buf.set(d.subarray(i), 0); this.n = d.length - i; }
-  }
-  hex(){
-    const bits = this.len * 8, pad = new Uint8Array(((this.n < 56 ? 56 : 120) - this.n) + 8);
-    pad[0] = 0x80; const dv = new DataView(pad.buffer);
-    dv.setUint32(pad.length - 8, Math.floor(bits / 4294967296)); dv.setUint32(pad.length - 4, bits >>> 0);
-    this.update(pad);
-    return [...this.h].map(x => (x >>> 0).toString(16).padStart(8, "0")).join("");
-  }
-}
-
 /* ---------- bech32 nsec ---------- */
 const CH = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
 function bechPoly(v){ let c = 1; for (const x of v){ const b = c >>> 25; c = (c & 0x1ffffff) << 5 ^ x; if (b&1) c ^= 0x3b6a57b2; if (b&2) c ^= 0x26508e6d; if (b&4) c ^= 0x1ea119fa; if (b&8) c ^= 0x3d4233dd; if (b&16) c ^= 0x2a1462b3; } return c >>> 0; }
@@ -404,7 +365,8 @@ async function derive(secret, salt){
 /* ---------- storage / transfer ---------- */
 async function opfs(){ if (!isSupported()) throw Error(t().unsupported); return navigator.storage.getDirectory(); }
 function updateBusy(name, progress, detail){
-  const had = !!document.querySelector(".transfer .fill");
+  const had = !!document.querySelector(".transfer .fill"), b = state.busy;
+  if (had && b && b.name === name && b.progress === progress && b.detail === detail) return;
   state.busy = { name, progress, detail };
   if (!had){ render(); return; }
   document.querySelector(".transfer p").textContent = name || "";
@@ -421,8 +383,7 @@ async function createContainer(file){
   const handle = await root.getFileHandle(token, { create:true });
   const writer = await handle.createWritable();
   const header = { v:1, name:file.name, type:file.type || "video/mp4", size:file.size, salt:base64(salt) };
-  const hasher = new Sha256();
-  const put = async bytes => { hasher.update(bytes); await writer.write(bytes); };
+  const put = bytes => writer.write(bytes);
   await put(ENC.encode(MAGIC + "\n" + JSON.stringify(header) + "\n"));
   const reader = file.stream().getReader();
   let index = 0, done = 0, lastPct = -1;
@@ -437,44 +398,69 @@ async function createContainer(file){
       if (pct !== lastPct){ lastPct = pct; updateBusy(file.name, pct, t().preparing); }
     }
   } finally { await writer.close(); }
-  const staged = await handle.getFile();
-  const hashed = hasher.len;
-  const sha256 = hasher.hex();
-  if (hashed !== staged.size) throw Error(`Staged container size mismatch (${hashed} / ${staged.size})`);
-  return { root, token, staged, header, sha256 };
+  return { root, token, staged: await handle.getFile(), header };
 }
-const preflight = (staged, auth, sha256) => fetch(CDN + "/upload", { method:"HEAD", headers:{ Authorization:auth, "X-SHA-256":sha256, "X-Content-Length":String(staged.size), "X-Content-Type":"text/plain; charset=utf-8" } }).then(r => ![401,403,413,415].includes(r.status)).catch(() => true);
-function send(staged, auth, name){
+const PART_SIZE = 32 * 1048576; /* each encrypted part is its own blob: stays under server/proxy size limits and each part gets a fresh auth event */
+function putPart(blob, auth, onProgress){
   return new Promise((resolve, reject) => {
-    const r = new XMLHttpRequest(); let last = -1;
+    const r = new XMLHttpRequest();
     r.open("PUT", CDN + "/upload");
     r.setRequestHeader("Authorization", auth);
     r.setRequestHeader("Content-Type", "text/plain; charset=utf-8");
-    r.upload.onprogress = e => { if (!e.lengthComputable) return; const p = 62 + Math.round(e.loaded / e.total * 38); if (p !== last){ last = p; updateBusy(name, p, t().upload); } };
-    r.onerror = () => reject(Error("Network transfer failed"));
-    r.onload = () => r.status >= 200 && r.status < 300 ? resolve(JSON.parse(r.responseText)) : reject(Error(`${r.getResponseHeader("X-Reason") || r.responseText || "HTTP " + r.status} (HTTP ${r.status})`));
-    r.send(staged);
+    r.upload.onprogress = e => { if (e.lengthComputable) onProgress(e.loaded); };
+    r.onerror = r.ontimeout = () => reject(Object.assign(Error("Network transfer failed"), { retry:true }));
+    r.onload = () => {
+      if (r.status >= 200 && r.status < 300){ try { resolve(JSON.parse(r.responseText)); } catch { reject(Error("Bad server response")); } }
+      else reject(Object.assign(Error(`${r.getResponseHeader("X-Reason") || r.responseText || "Upload rejected"} (HTTP ${r.status})`), { retry: r.status === 408 || r.status === 429 || r.status >= 500 }));
+    };
+    r.send(blob);
   });
+}
+async function uploadPart(blob, sha256, name, base, total, i, count){
+  let last;
+  for (let attempt = 0; attempt < 4; attempt++){
+    try {
+      const auth = await authorization("upload", sha256);
+      return await putPart(blob, auth, loaded => updateBusy(name, 62 + Math.round((base + loaded) / total * 38), `${t().upload} ${i + 1}/${count}`));
+    } catch (e){ last = e; if (!e.retry) break; await new Promise(r => setTimeout(r, 800 * 2 ** attempt)); }
+  }
+  throw Error(`${last.message} [part ${i + 1}/${count}]`);
+}
+async function removePart(p){
+  const r = await fetch(CDN + "/" + p.sha256, { method:"DELETE", headers:{ Authorization: await authorization("delete", p.sha256) } });
+  if (!r.ok && r.status !== 404) throw Error(await r.text());
 }
 async function stageUpload(file){
   if (!file.type.startsWith("video/")){ setNotice("Video MIME type required.", true); return false; }
-  if (file.size > MAX_SOURCE){ setNotice(t().sourceTooLarge, true); return false; }
   if (!isSupported()){ setNotice(t().unsupported, true); return false; }
+  let stage = null; const parts = [];
   try {
     updateBusy(file.name, 1, t().preparing);
-    const stage = await createContainer(file);
-    const auth = await authorization("upload", stage.sha256);
-    if (!await preflight(stage.staged, auth, stage.sha256)){ await stage.root.removeEntry(stage.token); state.busy = null; setNotice("The storage server did not accept this transfer.", true); return false; }
-    const d = await send(stage.staged, auth, file.name);
+    stage = await createContainer(file);
+    const total = stage.staged.size, count = Math.max(1, Math.ceil(total / PART_SIZE));
+    for (let i = 0; i < count; i++){
+      const blob = stage.staged.slice(i * PART_SIZE, Math.min(total, (i + 1) * PART_SIZE));
+      const sha256 = hex(await sha(new Uint8Array(await blob.arrayBuffer())));
+      const d = await uploadPart(blob, sha256, file.name, i * PART_SIZE, total, i, count);
+      parts.push({ sha256: d.sha256 || sha256, url: d.url || `${CDN}/${sha256}`, size: blob.size });
+    }
     await stage.root.removeEntry(stage.token);
-    state.catalog[d.sha256] = { ...stage.header, url:d.url, encryptedSize:d.size, uploaded:d.uploaded, owner:state.pubkey };
+    const first = parts[0], when = Math.floor(Date.now() / 1000);
+    state.catalog[first.sha256] = { ...stage.header, parts, url:first.url, encryptedSize:total, uploaded:when, owner:state.pubkey };
     saveCatalog();
+    const d = { sha256:first.sha256, url:first.url, size:total, type:"text/plain", uploaded:when };
     state.movies = [d, ...state.movies.filter(m => m.sha256 !== d.sha256)];
     state.active = d;
     state.busy = { name:file.name, progress:100, detail:t().complete };
     render();
     return true;
-  } catch (e) { state.busy = null; setNotice(e.message || "Upload failed", true); return false; }
+  } catch (e) {
+    state.busy = null;
+    if (stage) try { await stage.root.removeEntry(stage.token); } catch {}
+    for (const p of parts) removePart(p).catch(() => {});
+    setNotice(e.message || "Upload failed", true);
+    return false;
+  }
 }
 async function uploadMany(files){
   const queue = [...files].filter(f => f.type.startsWith("video/"));
@@ -482,13 +468,21 @@ async function uploadMany(files){
   for (const f of queue){ if (!await stageUpload(f)) return; }
   setTimeout(() => { if (state.busy?.progress === 100){ state.busy = null; render(); } }, 2000);
 }
-async function* textLines(stream){
-  const reader = stream.pipeThrough(new TextDecoderStream()).getReader(); let carry = "";
-  while (true){
-    const part = await reader.read(); if (part.done) break;
-    carry += part.value; let cut;
+async function* partBytes(parts){
+  for (const part of parts){
+    const r = await fetch(part.url || `${CDN}/${part.sha256}`, { headers:{ Authorization: await authorization("get", part.sha256) } });
+    if (!r.ok || !r.body) throw Error(await r.text());
+    const reader = r.body.getReader();
+    while (true){ const x = await reader.read(); if (x.done) break; yield x.value; }
+  }
+}
+async function* textLines(chunks){
+  const dec = new TextDecoder(); let carry = "";
+  for await (const c of chunks){
+    carry += dec.decode(c, { stream:true }); let cut;
     while ((cut = carry.indexOf("\n")) >= 0){ yield carry.slice(0, cut); carry = carry.slice(cut + 1); }
   }
+  carry += dec.decode();
   if (carry) yield carry;
 }
 async function decryptToOpfs(movie, purpose){
@@ -497,11 +491,10 @@ async function decryptToOpfs(movie, purpose){
   const handle = await root.getFileHandle(token, { create:true });
   const writer = await handle.createWritable();
   try {
-    const response = await fetch(movie.url, { headers:{ Authorization: await authorization("get", movie.sha256) } });
-    if (!response.ok || !response.body) throw Error(await response.text());
-    const total = Number(response.headers.get("content-length") || movie.size || 0);
+    const parts = state.catalog[movie.sha256]?.parts || [{ sha256: movie.sha256, url: movie.url }];
+    const total = Number(movie.size || 0);
     let read = 0, index = 0, header = null, key = null, lastPct = -1;
-    for await (const line of textLines(response.body)){
+    for await (const line of textLines(partBytes(parts))){
       read += line.length + 1;
       if (index === 0){ if (line !== MAGIC) throw Error(t().invalidContainer); index++; continue; }
       if (index === 1){ header = JSON.parse(line); key = await derive(state.secret, unbase64(header.salt)); index++; continue; }
@@ -554,8 +547,7 @@ async function saveMovie(hash){
   } catch (e) { state.busy = null; if (!(e instanceof DOMException && e.name === "AbortError")) setNotice(e.message || "Save failed", true); else render(); }
 }
 async function removeRemote(movie){
-  const r = await fetch(CDN + "/" + movie.sha256, { method:"DELETE", headers:{ Authorization: await authorization("delete", movie.sha256) } });
-  if (!r.ok) throw Error(await r.text());
+  for (const p of state.catalog[movie.sha256]?.parts || [{ sha256: movie.sha256 }]) await removePart(p);
   state.movies = state.movies.filter(m => m.sha256 !== movie.sha256);
   delete state.catalog[movie.sha256]; state.picked.delete(movie.sha256);
   saveCatalog();
