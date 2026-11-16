@@ -111,8 +111,8 @@ const P = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2Fn;
 const G = { x: 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798n, y: 0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8n };
 
 const TEXT = {
-  en: { archive:"Personal archive", library:"Library", transfer:"Transfer desk", player:"Encrypted player", setupEye:"Private media control room", setupTitle:"Your film cabinet. Under your control.", setupText:"A browser-only workbench that encrypts your own videos before they leave this device.", keyTitle:"Unlock the cabinet", keyText:"Create a Nostr key securely on this device, or import a key you already own.", create:"Create local key", import:"Import existing key", createAction:"Generate a new private key", importAction:"Unlock with this key", keyPlaceholder:"Paste nsec… or 64-character hex private key", keyNote:"A new key is generated locally and never leaves this browser. Back it up: it cannot be recovered.", armed:"Cabinet armed", refresh:"Sync library", erase:"Erase key", copyKey:"Copy private key", copied:"Copied", noKey:"No private key to copy", dashboardEye:"Encrypted Blossom vault", dashboardTitle:"Film cabinet", dashboardDetail:"Each remote object is encrypted before upload. Decryption goes to temporary private storage for playback or one-file saving.", remote:"Encrypted reels", items:"items", emptyTitle:"No reels on the shelf", emptyText:"Stage a video and its encrypted remote copy will appear here.", stage:"Stage files", stageHint:"Drop videos here or choose from disk", stageNote:"Large files are encrypted and prepared as a stream", preparing:"Encrypting into private temporary storage", upload:"Uploading encrypted container", complete:"Transfer complete", playerTitle:"Playback bay", playerEmpty:"Select an encrypted reel. It will be decrypted into private temporary storage before playback.", load:"Prepare playback", download:"Save one file", delete:"Delete", loaded:"Decrypted from remote storage", saving:"Decrypting to a single saved file", saved:"Saved as one complete file", unsupported:"This browser needs secure storage and a save-file dialog. Use a current Chromium desktop browser.", keyBad:"That does not look like a valid nsec or 64-character private key.", deleteTitle:"Remove this encrypted reel?", deleteText:"The request is signed with your Nostr key. If you are its final owner, it cannot be restored.", cancel:"Cancel", confirm:"Remove reel", connection:"Connection note", invalidContainer:"This remote object is not a MyMovieWorld encrypted video.", sourceTooLarge:"Select a video smaller than 1.45 GB so its encrypted container remains below the server limit.", search:"Search titles…", shown:"shown", noMatch:"No encrypted reel matches this title.", selAll:"Select all", clear:"Clear", delSel:"Delete selected", confirmMany:"Delete {n} selected encrypted reels?" },
-  ko: { archive:"개인 아카이브", library:"라이브러리", transfer:"전송 데스크", player:"암호화 재생", setupEye:"개인 미디어 제어실", setupTitle:"나의 필름 캐비닛. 내가 제어합니다.", setupText:"내 동영상이 기기를 떠나기 전에 브라우저에서 암호화되는 작업 공간입니다.", keyTitle:"캐비닛 잠금 해제", keyText:"이 기기에서 Nostr 키를 안전하게 생성하거나, 보유한 키를 불러오세요.", create:"로컬 키 생성", import:"기존 키 불러오기", createAction:"새 개인키 생성", importAction:"이 키로 잠금 해제", keyPlaceholder:"nsec… 또는 64자리 hex 개인키 붙여넣기", keyNote:"새 키는 기기에서 생성되며 이 브라우저를 떠나지 않습니다. 복구할 수 없으니 반드시 백업하세요.", armed:"캐비닛 준비 완료", refresh:"라이브러리 동기화", erase:"키 지우기", copyKey:"개인키 복사", copied:"복사됨", noKey:"복사할 개인키가 없습니다", dashboardEye:"암호화된 Blossom 보관함", dashboardTitle:"필름 캐비닛", dashboardDetail:"원격 객체는 전송 전 암호화됩니다. 재생과 단일 파일 저장을 위해서만 임시 비공개 저장소에서 복호화합니다.", remote:"암호화된 릴", items:"개", emptyTitle:"선반에 릴이 없습니다", emptyText:"동영상을 올리면 암호화된 원격 복사본이 여기에 표시됩니다.", stage:"파일 올리기", stageHint:"동영상을 놓거나 디스크에서 선택하세요", stageNote:"대용량 파일은 스트림 단위로 암호화·준비됩니다", preparing:"비공개 임시 저장소에 암호화 중", upload:"암호화 컨테이너 업로드 중", complete:"전송 완료", playerTitle:"재생 베이", playerEmpty:"암호화된 릴을 선택하세요. 재생 전에 비공개 임시 저장소에서 복호화합니다.", load:"재생 준비", download:"하나의 파일로 저장", delete:"삭제", loaded:"원격 저장소에서 복호화됨", saving:"단일 저장 파일로 복호화 중", saved:"하나의 완전한 파일로 저장됨", unsupported:"이 기능에는 보안 저장소와 저장 파일 창이 필요합니다. 최신 Chromium 데스크톱 브라우저를 사용하세요.", keyBad:"유효한 nsec 또는 64자리 개인키 형식이 아닙니다.", deleteTitle:"암호화된 릴을 삭제할까요?", deleteText:"요청은 Nostr 키로 서명됩니다. 내가 마지막 소유자라면 되돌릴 수 없습니다.", cancel:"취소", confirm:"릴 삭제", connection:"연결 안내", invalidContainer:"이 원격 객체는 MyMovieWorld 암호화 동영상이 아닙니다.", sourceTooLarge:"암호화 컨테이너가 서버 한도 안에 들도록 1.45 GB 미만 동영상을 선택하세요.", search:"제목 검색…", shown:"표시", noMatch:"일치하는 암호화된 릴이 없습니다.", selAll:"전체 선택", clear:"선택 해제", delSel:"선택 삭제", confirmMany:"선택한 {n}개의 암호화된 릴을 삭제할까요?" }
+  en: { archive:"Personal archive", library:"Library", transfer:"Transfer desk", player:"Encrypted player", setupEye:"Private media control room", setupTitle:"Your film cabinet. Under your control.", setupText:"A browser-only workbench that encrypts your own videos before they leave this device.", keyTitle:"Unlock the cabinet", keyText:"Create a Nostr key securely on this device, or import a key you already own.", create:"Create local key", import:"Import existing key", createAction:"Generate a new private key", importAction:"Unlock with this key", keyPlaceholder:"Paste nsec… or 64-character hex private key", keyNote:"A new key is generated locally and never leaves this browser. Back it up: it cannot be recovered.", armed:"Cabinet armed", refresh:"Sync library", erase:"Erase key", copyKey:"Copy private key", copied:"Copied", noKey:"No private key to copy", dashboardEye:"Encrypted Blossom vault", dashboardTitle:"Film cabinet", dashboardDetail:"Each remote object is encrypted before upload. Decryption goes to temporary private storage for playback or one-file saving.", remote:"Encrypted reels", items:"items", emptyTitle:"No reels on the shelf", emptyText:"Stage a video and its encrypted remote copy will appear here.", stage:"Stage files", stageHint:"Drop videos here or choose from disk", stageNote:"Large files are encrypted and prepared as a stream", preparing:"Encrypting into private temporary storage", upload:"Uploading encrypted container", complete:"Transfer complete", playerTitle:"Playback bay", playerEmpty:"Select an encrypted reel. It will be decrypted into private temporary storage before playback.", load:"Prepare playback", download:"Save one file", delete:"Delete", loaded:"Decrypted from remote storage", saving:"Decrypting to a single saved file", saved:"Saved as one complete file", unsupported:"This browser needs secure storage and a save-file dialog. Use a current Chromium desktop browser.", keyBad:"That does not look like a valid nsec or 64-character private key.", deleteTitle:"Remove this encrypted reel?", deleteText:"The request is signed with your Nostr key. If you are its final owner, it cannot be restored.", cancel:"Cancel", confirm:"Remove reel", connection:"Connection note", invalidContainer:"This remote object is not a MyMovieWorld encrypted video.", sourceTooLarge:"Select a video smaller than 1.45 GB so its encrypted container remains below the server limit.", videoFail:"This browser cannot decode this video (codec or container). Use “Save one file” and open it in a desktop player.", videoOk:"Decrypted from remote storage", delFailed:"The server did not delete this reel:", delLocalAsk:"Remove it from this library anyway? (The encrypted data may remain on the server.)", search:"Search titles…", shown:"shown", noMatch:"No encrypted reel matches this title.", selAll:"Select all", clear:"Clear", delSel:"Delete selected", confirmMany:"Delete {n} selected encrypted reels?" },
+  ko: { archive:"개인 아카이브", library:"라이브러리", transfer:"전송 데스크", player:"암호화 재생", setupEye:"개인 미디어 제어실", setupTitle:"나의 필름 캐비닛. 내가 제어합니다.", setupText:"내 동영상이 기기를 떠나기 전에 브라우저에서 암호화되는 작업 공간입니다.", keyTitle:"캐비닛 잠금 해제", keyText:"이 기기에서 Nostr 키를 안전하게 생성하거나, 보유한 키를 불러오세요.", create:"로컬 키 생성", import:"기존 키 불러오기", createAction:"새 개인키 생성", importAction:"이 키로 잠금 해제", keyPlaceholder:"nsec… 또는 64자리 hex 개인키 붙여넣기", keyNote:"새 키는 기기에서 생성되며 이 브라우저를 떠나지 않습니다. 복구할 수 없으니 반드시 백업하세요.", armed:"캐비닛 준비 완료", refresh:"라이브러리 동기화", erase:"키 지우기", copyKey:"개인키 복사", copied:"복사됨", noKey:"복사할 개인키가 없습니다", dashboardEye:"암호화된 Blossom 보관함", dashboardTitle:"필름 캐비닛", dashboardDetail:"원격 객체는 전송 전 암호화됩니다. 재생과 단일 파일 저장을 위해서만 임시 비공개 저장소에서 복호화합니다.", remote:"암호화된 릴", items:"개", emptyTitle:"선반에 릴이 없습니다", emptyText:"동영상을 올리면 암호화된 원격 복사본이 여기에 표시됩니다.", stage:"파일 올리기", stageHint:"동영상을 놓거나 디스크에서 선택하세요", stageNote:"대용량 파일은 스트림 단위로 암호화·준비됩니다", preparing:"비공개 임시 저장소에 암호화 중", upload:"암호화 컨테이너 업로드 중", complete:"전송 완료", playerTitle:"재생 베이", playerEmpty:"암호화된 릴을 선택하세요. 재생 전에 비공개 임시 저장소에서 복호화합니다.", load:"재생 준비", download:"하나의 파일로 저장", delete:"삭제", loaded:"원격 저장소에서 복호화됨", saving:"단일 저장 파일로 복호화 중", saved:"하나의 완전한 파일로 저장됨", unsupported:"이 기능에는 보안 저장소와 저장 파일 창이 필요합니다. 최신 Chromium 데스크톱 브라우저를 사용하세요.", keyBad:"유효한 nsec 또는 64자리 개인키 형식이 아닙니다.", deleteTitle:"암호화된 릴을 삭제할까요?", deleteText:"요청은 Nostr 키로 서명됩니다. 내가 마지막 소유자라면 되돌릴 수 없습니다.", cancel:"취소", confirm:"릴 삭제", connection:"연결 안내", invalidContainer:"이 원격 객체는 MyMovieWorld 암호화 동영상이 아닙니다.", sourceTooLarge:"암호화 컨테이너가 서버 한도 안에 들도록 1.45 GB 미만 동영상을 선택하세요.", videoFail:"이 브라우저는 이 영상의 코덱/컨테이너를 재생할 수 없습니다. “하나의 파일로 저장” 후 데스크톱 플레이어로 여세요.", videoOk:"원격 저장소에서 복호화됨", delFailed:"서버에서 이 릴을 삭제하지 못했습니다:", delLocalAsk:"그래도 이 라이브러리 목록에서는 제거할까요? (암호화된 데이터가 서버에 남을 수 있습니다.)", search:"제목 검색…", shown:"표시", noMatch:"일치하는 암호화된 릴이 없습니다.", selAll:"전체 선택", clear:"선택 해제", delSel:"선택 삭제", confirmMany:"선택한 {n}개의 암호화된 릴을 삭제할까요?" }
 };
 
 const state = { lang: localStorage.getItem("mymovieworld:lang") || "en", secret:null, pubkey:"", movies:[], active:null, playerURL:"", playerToken:"", busy:null, notice:null, pending:null, createMode:"create", keyValue:"", filter:"", picked:new Set(), catalog:{} };
@@ -248,6 +248,8 @@ function bind(){
     zone.addEventListener("dragleave", () => zone.classList.remove("drag"));
     zone.addEventListener("drop", e => { e.preventDefault(); zone.classList.remove("drag"); const f = [...(e.dataTransfer.files || [])]; if (f.length) uploadMany(f); });
   }
+  const video = document.querySelector("#player video");
+  if (video) video.addEventListener("error", () => { const p = document.querySelector(".player-detail p"); if (p) p.textContent = t().videoFail; });
   const key = document.getElementById("key-input");
   if (key) key.addEventListener("input", e => state.keyValue = e.target.value);
 }
@@ -427,8 +429,18 @@ async function uploadPart(blob, sha256, name, base, total, i, count){
   throw Error(`${last.message} [part ${i + 1}/${count}]`);
 }
 async function removePart(p){
-  const r = await fetch(CDN + "/" + p.sha256, { method:"DELETE", headers:{ Authorization: await authorization("delete", p.sha256) } });
-  if (!r.ok && r.status !== 404) throw Error(await r.text());
+  let err = null;
+  for (let attempt = 0; attempt < 3; attempt++){
+    try {
+      const r = await fetch(CDN + "/" + p.sha256, { method:"DELETE", headers:{ Authorization: await authorization("delete", p.sha256) } });
+      if (r.ok || r.status === 404) return;
+      const why = r.headers.get("X-Reason") || (await r.text().catch(() => "")).slice(0, 200) || "Delete rejected";
+      err = Error(`${why} (HTTP ${r.status})`);
+      if (r.status !== 429 && r.status < 500) break;
+    } catch (e) { err = Error(`DELETE request failed: ${e.message}`); }
+    await new Promise(res => setTimeout(res, 700 * 2 ** attempt));
+  }
+  throw err;
 }
 async function stageUpload(file){
   if (!file.type.startsWith("video/")){ setNotice("Video MIME type required.", true); return false; }
@@ -442,6 +454,8 @@ async function stageUpload(file){
       const blob = stage.staged.slice(i * PART_SIZE, Math.min(total, (i + 1) * PART_SIZE));
       const sha256 = hex(await sha(new Uint8Array(await blob.arrayBuffer())));
       const d = await uploadPart(blob, sha256, file.name, i * PART_SIZE, total, i, count);
+      if (d.sha256 && d.sha256 !== sha256) throw Error(`Server hash mismatch [part ${i + 1}/${count}]`);
+      if (d.size != null && Number(d.size) !== blob.size) throw Error(`Server stored ${d.size} bytes, expected ${blob.size} [part ${i + 1}/${count}]`);
       parts.push({ sha256: d.sha256 || sha256, url: d.url || `${CDN}/${sha256}`, size: blob.size });
     }
     await stage.root.removeEntry(stage.token);
@@ -468,12 +482,26 @@ async function uploadMany(files){
   for (const f of queue){ if (!await stageUpload(f)) return; }
   setTimeout(() => { if (state.busy?.progress === 100){ state.busy = null; render(); } }, 2000);
 }
+async function fetchPart(part){
+  const url = part.url || `${CDN}/${part.sha256}`;
+  let err = null;
+  for (let attempt = 0; attempt < 4; attempt++){
+    const useAuth = attempt % 2 === 1; /* plain GET, then signed GET, then again */
+    try {
+      const r = await fetch(url, useAuth ? { headers:{ Authorization: await authorization("get", part.sha256) } } : undefined);
+      if (r.ok && r.body) return r;
+      err = Error(`HTTP ${r.status}`);
+      if (r.status === 404) break;
+    } catch (e) { err = e; }
+    if (useAuth) await new Promise(res => setTimeout(res, 700));
+  }
+  throw Error(`Download failed: ${err?.message || "unknown"} [${part.sha256.slice(0, 10)}]`);
+}
 async function* partBytes(parts){
-  for (const part of parts){
-    const r = await fetch(part.url || `${CDN}/${part.sha256}`, { headers:{ Authorization: await authorization("get", part.sha256) } });
-    if (!r.ok || !r.body) throw Error(await r.text());
-    const reader = r.body.getReader();
-    while (true){ const x = await reader.read(); if (x.done) break; yield x.value; }
+  for (let i = 0; i < parts.length; i++){
+    const part = parts[i], reader = (await fetchPart(part)).body.getReader(); let got = 0;
+    while (true){ const x = await reader.read(); if (x.done) break; got += x.value.length; yield x.value; }
+    if (part.size && got !== part.size) throw Error(`Part ${i + 1}/${parts.length} is ${got} bytes, expected ${part.size}`);
   }
 }
 async function* textLines(chunks){
@@ -493,7 +521,7 @@ async function decryptToOpfs(movie, purpose){
   try {
     const parts = state.catalog[movie.sha256]?.parts || [{ sha256: movie.sha256, url: movie.url }];
     const total = Number(movie.size || 0);
-    let read = 0, index = 0, header = null, key = null, lastPct = -1;
+    let read = 0, written = 0, index = 0, header = null, key = null, lastPct = -1;
     for await (const line of textLines(partBytes(parts))){
       read += line.length + 1;
       if (index === 0){ if (line !== MAGIC) throw Error(t().invalidContainer); index++; continue; }
@@ -501,10 +529,11 @@ async function decryptToOpfs(movie, purpose){
       if (!line) continue;
       const rec = JSON.parse(line);
       const plain = await crypto.subtle.decrypt({ name:"AES-GCM", iv:unbase64(rec.iv), additionalData:ENC.encode(`${header.size}:${rec.i}`) }, key, unbase64(rec.data));
-      await writer.write(plain);
+      await writer.write(plain); written += plain.byteLength;
       const pct = total ? Math.min(99, Math.round(read / total * 100)) : 0;
       if (pct !== lastPct){ lastPct = pct; updateBusy(header.name, pct, purpose); }
     }
+    if (!header || written !== header.size) throw Error(`Decrypted ${written} of ${header ? header.size : "?"} bytes — a part is missing or truncated`);
     await writer.close();
     return { root, token, handle, header };
   } catch (e) {
@@ -524,7 +553,7 @@ async function preparePlayback(hash){
     updateBusy(movieName(movie), 1, t().load);
     const ready = await decryptToOpfs(movie, t().load);
     await clearPlayer();
-    state.playerURL = URL.createObjectURL(await ready.handle.getFile());
+    { const f = await ready.handle.getFile(); state.playerURL = URL.createObjectURL(f.slice(0, f.size, ready.header.type || "video/mp4")); }
     state.playerToken = ready.token;
     state.catalog[movie.sha256] = { ...state.catalog[movie.sha256], ...ready.header };
     saveCatalog(); state.active = movie; state.busy = null; render();
@@ -546,20 +575,42 @@ async function saveMovie(hash){
     setTimeout(() => { if (state.busy?.progress === 100){ state.busy = null; render(); } }, 2000);
   } catch (e) { state.busy = null; if (!(e instanceof DOMException && e.name === "AbortError")) setNotice(e.message || "Save failed", true); else render(); }
 }
-async function removeRemote(movie){
-  for (const p of state.catalog[movie.sha256]?.parts || [{ sha256: movie.sha256 }]) await removePart(p);
+async function dropLocal(movie){
   state.movies = state.movies.filter(m => m.sha256 !== movie.sha256);
   delete state.catalog[movie.sha256]; state.picked.delete(movie.sha256);
   saveCatalog();
   if (state.active?.sha256 === movie.sha256){ state.active = state.movies[0] || null; await clearPlayer(); }
 }
+async function removeRemote(movie){
+  const entry = state.catalog[movie.sha256];
+  const left = [...(entry?.parts || [{ sha256: movie.sha256 }])];
+  while (left.length){
+    await removePart(left[0]);
+    left.shift();
+    if (entry?.parts){ entry.parts = [...left]; saveCatalog(); } /* a retry resumes where it stopped */
+  }
+  await dropLocal(movie);
+}
 async function deleteMovie(movie){
-  try { await removeRemote(movie); state.pending = null; render(); }
-  catch (e) { state.pending = null; setNotice(e.message || "Delete failed", true); }
+  state.pending = null;
+  try { await removeRemote(movie); render(); }
+  catch (e) {
+    if (window.confirm(`${t().delFailed}\n${e.message}\n\n${t().delLocalAsk}`)) await dropLocal(movie);
+    else state.notice = { message:e.message || "Delete failed", error:true };
+    render();
+  }
 }
 async function deleteMany(hashes){
-  try { for (const h of hashes){ const m = state.movies.find(x => x.sha256 === h); if (m) await removeRemote(m); } render(); }
-  catch (e) { setNotice(e.message || "Delete failed", true); }
+  const failed = []; let reason = "";
+  for (const h of hashes){
+    const m = state.movies.find(x => x.sha256 === h); if (!m) continue;
+    try { await removeRemote(m); } catch (e) { failed.push(m); reason = reason || e.message; }
+  }
+  if (failed.length){
+    if (window.confirm(`${t().delFailed} ${failed.length}/${hashes.length}\n${reason}\n\n${t().delLocalAsk}`)){ for (const m of failed) await dropLocal(m); }
+    else state.notice = { message:reason || "Delete failed", error:true };
+  }
+  render();
 }
 function sync(){
   if (!state.secret) return;
