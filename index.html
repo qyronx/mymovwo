@@ -246,11 +246,19 @@
     (() => {
       function replaceUploadHint() {
         const korean = localStorage.getItem("mymovieworld:lang") === "ko";
+    
         document.querySelectorAll(".file-label small").forEach((hint) => {
-          hint.textContent = korean ? "대용량 파일은 스트림 단위로 암호화·준비됩니다" : "Large files are encrypted and prepared as a stream";
+            hint.textContent = korean
+                ? "대용량 파일은 스트림 단위로 암호화·준비됩니다"
+                : "Large files are encrypted and prepared as a stream";
         });
-      }
-      new MutationObserver(replaceUploadHint).observe(document.getElementById("app"), { childList: true, subtree: true });
+    }
+    
+    new MutationObserver(replaceUploadHint)
+        .observe(document.getElementById("app"), {
+            childList: true,
+            subtree: true
+        });
       replaceUploadHint();
     })();
   </script>
