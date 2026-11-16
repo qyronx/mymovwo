@@ -438,8 +438,9 @@ async function createContainer(file){
     }
   } finally { await writer.close(); }
   const staged = await handle.getFile();
+  const hashed = hasher.len;
   const sha256 = hasher.hex();
-  if (hasher.len !== staged.size) throw Error("Staged container size mismatch");
+  if (hashed !== staged.size) throw Error(`Staged container size mismatch (${hashed} / ${staged.size})`);
   return { root, token, staged, header, sha256 };
 }
 const preflight = (staged, auth, sha256) => fetch(CDN + "/upload", { method:"HEAD", headers:{ Authorization:auth, "X-SHA-256":sha256, "X-Content-Length":String(staged.size), "X-Content-Type":"text/plain; charset=utf-8" } }).then(r => ![401,403,413,415].includes(r.status)).catch(() => true);
